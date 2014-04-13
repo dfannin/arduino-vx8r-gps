@@ -15,7 +15,7 @@ The code was designed to work with a specific GPS module (Ublox neo-6m), but sho
 
 The unit was tested as a automobile  beacon transmitter, and provided acurate tracking information as reported by the http://aprs.fi website. 
 
-This project builds from the work done by Taylor Meeks (http://www.lingnik.com/content/reverse-engineering-yaesu-vx-8dr-gps-interface).  
+This project builds from the work done by Taylor Meeks KG7BBG (http://www.lingnik.com/content/reverse-engineering-yaesu-vx-8dr-gps-interface).  
 
 
 # Block Diagram
@@ -25,24 +25,39 @@ The GPS unit consists of three parts.  The GPS module provides NMEA messages via
 
 
 # NMEA messages
-The following NMEA messages are sent to the Yaesu:
+The following NMEA messages are sent to the Yaesu (thanks to Taylor KG7BBG) :
 
 * $GPGGA,hhmmss.sss,llll.llll,a,yyyyy.yyyy,a,x,xx,xx.x,xxxxx.x,M,xxxx.x,M,xxx.x,xxxx\*hh
-* $GPGLL,3742.4413,N,12157.6537,W,175908.000,A,A\*4E
-* $GPGSA,A,3,32,31,01,23,11,,,,,,,,4.7,2.2,4.1\*37
-* $GPGSV,3,1,11,01,47,238,38,06,,,21,11,24,217,33,13,07,260,\*4D
-* $GPRMC,hhmmss.sss,A,llll.llll,a,yyyyy.yyyy,a,xxxx.xx,xxx.xx,xxxxxx,,\*hh
-* $GPVTG,,T,,M,0.46,N,0.8,K,A\*19
+* $GPGLL,llll.llll,a,llll.llll,a,nnnnnn.nnn,a,a\*hh
+* $GPGSA,a,n,nn,nn,nn,nn,nn,,,,,,,,n.n,n.n,n.n\*hh
+* $GPGSV,n,n,nn,nn,nn,nnn,nn,nn,,,nn,nn,nn,nnn,nn,nn,nn,nnn,\*hh
+* $GPRMC,hhmmss.sss,a,llll.llll,a,yyyyy.yyyy,a,xxxx.xx,xxx.xx,xxxxxx,,\*hh
+* $GPVTG,,a,,a,n.nn,a,n.n,a,a\*hh
 * $GPZDA,hhmmss.sss,xx,xx,xxxx,,\*hh
+
+Other points:
+* Any other message types (like $GPTXT) are filtered from the output stream.
+* Fields should be kept as fixed width (and zero padded) 
+* No modification of the Yaesu -> GPS messages, they are passed through directly. This didn't appear to cause any issues.
 
 
 # Hardware
 
+## Schematic
+ ![BlockDiagram](https://raw.github.com/dfannin/arduino-vx8r-gps/master/YaesuGPSSchematic.png)
+
 ## NMEA-compatible GPS Module
+A Ublox Neo-6m GPS module (NEO-6M-0-001)  was used (around $15USD on Ebay), including an active antenna. It is a stand-alone GPS module.  The Ublox has four connections, TX, RX, VCC and GND.   The module has a voltage regulator, and can take up to 6+ volts input.   The serial port is set to  9600,N,1 as a default.  
+
+I had to change the ublox firmware settings to produced the desired output using the Ublox Ucenter software (available from the Ublox website). You'll need to connect the tx/rx and gnd pins to a USB/TTL3.3v FTDI or equivlent cable and connect to a computer running the Ucenter (windows based) software. I used Ubuntu/Wine to run the Ucenter software - it would crash sometimes, but I was to able to reprogram the module.   I changed the following settings and saved them to the EEPROM:  Output: NMEA, Output Version 2.3, Compatiblity Mode (checked), GPZDA messages set output to true.    
+
+The Ublox is cross-over connected to an Arduino software serial port using AltSoftSerial, which uses pins D8 and D9 (RX and TX), so connect the Ublox RX to the Arduino TX pin and vis versa.  The Ublox was connected to the power supply, which was 4 x AAA batteries (6v+).
+![Ublox](https://raw.github.com/dfannin/arduino-vx8r-gps/master/ublox-neo6m.jpg)
+
 
 ## Arduino
 
-## Yaesu HT
+## Yaesu HT Cable
 
 # Use  
 
