@@ -6,7 +6,7 @@ Arduino code for buidling Yaesu VX8r Handheld Transmitter-compatible GPS
 # Overview
 
 # Block Diagram
- ![BlockDiagram]{https://raw.github.com/dfannin/arduino-vx8r-gps/master/arduino-vx8r-gps-fig01.png}
+ ![BlockDiagram](https://raw.github.com/dfannin/arduino-vx8r-gps/master/arduino-vx8r-gps-fig01.png)
 
 # Hardware
 
