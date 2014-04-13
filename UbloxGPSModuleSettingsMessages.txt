@@ -1,0 +1,53 @@
+Ublox NEO-6M GPS Module (UBX-G60xx)   
+firmware version:  7.03
+firmware settings:
+speed 9600,8,N,1
+NMEA version 2.3
+compatibility mode set
+GPZDA message set active 
+
+--------- Messages --------------------------------------------------------
+
+// GGA Message
+// Ublox format
+U $GPGGA,175908.000,3742.4413,N,12157.6537,W,1,05,2.2,226.5,M,-29.4,M,,0000*6F
+    0         1          2    3     4      5 6 7   8   9   10   11  12 13 14
+// Yaesu format
+Y $GPGGA,123223.000,4131.2334,N,00021.1216,E,1,04,02.7,00123.4,M,0051.7,M,000.0,0000*41
+Y $GPGGA,hhmmss.sss,llll.llll,a,yyyyy.yyyy,a,x,xx,xx.x,xxxxx.x,M,xxxx.x,M,xxx.x,xxxx*hh
+    0       1          2      3      4     5 6 7   8      9    10  11  12  13    14  
+                                                   *      *         *      *
+
+// GLL - no change
+U $GPGLL,3742.4413,N,12157.6537,W,175908.000,A,A*4E
+   no change
+
+// GSA - no change
+U $GPGSA,A,3,32,31,01,23,11,,,,,,,,4.7,2.2,4.1*37
+
+// GSV - no change
+U $GPGSV,3,1,11,01,47,238,38,06,,,21,11,24,217,33,13,07,260,*4D
+
+// RMC 
+// Ublox format
+U $GPRMC,175909.000,A,3742.4410,N,12157.6535,W,0.59,,080414,,,A*62
+                                                          *           **
+// Yaesu format
+Y $GPRMC,123223.000,A,4131.2334,N,00021.1216,E,0000.00,291.33,301011,,*3E
+Y $GPRMC,hhmmss.sss,A,llll.llll,a,yyyyy.yyyy,a,xxxx.xx,xxx.xx,xxxxxx,,*hh
+     0       1      2     3     4      5     6   7       8     9    10 
+                                                 *             * 
+
+// VTG - no change
+U $GPVTG,,T,,M,0.46,N,0.8,K,A*19
+
+// ZDA - no change
+// Ublox format
+U $GPZDA,175908.000,08,04,2014,,*5F
+// Yaesu format
+Y $GPZDA,123223.000,30,10,2011,,*55
+Y $GPZDA,hhmmss.sss,xx,xx,xxxx,,*hh
+
+// TXT - remove message
+U $GPTXT,01,01,02,u-blox ag - www.u-blox.com*50
+
