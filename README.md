@@ -4,6 +4,7 @@ arduino-vx8r-gps
 Arduino code for buidling Yaesu VX-8R Handheld Transmitter-compatible GPS
 
 # Overview
+![BlockDiagram](https://raw.github.com/dfannin/arduino-vx8r-gps/master/img/vx8r-lcd.jpg)
 
 The Yaesu VX-8R HT for amateur radio VHF/UHF bands has a built-in APRS (Automatic Position Reporting System)  TNC (Terminal Node Controller) to operate as an APRS Beacon transmitter and receiver. To add position and velocity (GPS information) to the transmitted packet, an external Proprietary GPS module must be purchased from Yaesu and connected to HT.
 
@@ -19,7 +20,7 @@ This project builds from the work done by Taylor Meeks KG7BBG (http://www.lingni
 
 
 # Block Diagram
- ![BlockDiagram](https://raw.github.com/dfannin/arduino-vx8r-gps/master/arduino-vx8r-gps-fig01.png)
+ ![BlockDiagram](https://raw.github.com/dfannin/arduino-vx8r-gps/master/img/arduino-vx8r-gps-fig01.png)
 
 The GPS unit consists of three parts.  The GPS module provides NMEA messages via a two wire serial port (tx/rx). These messages are version 2.3 compliant.  The messages are sent to the Arduino, using a software serial port (AltSoftSerial), and are parsed, filtered and reformatted for the Yaesu.  The reformatted messages are sent to the Yaesu via the hardware serial port using a proprietary Yaesu cable (CT-M11 or equivilent), as the HT uses a 7 pin propreitary connector.  
 
@@ -44,7 +45,7 @@ Other points:
 # Hardware
 
 ## Schematic
- ![BlockDiagram](https://raw.github.com/dfannin/arduino-vx8r-gps/master/YaesuGPSSchematic.png)
+![BlockDiagram](https://raw.github.com/dfannin/arduino-vx8r-gps/master/img/YaesuGPSSchematic.png)
 
 ## NMEA-compatible GPS Module
 A Ublox Neo-6m GPS module (NEO-6M-0-001)  was used (around $15USD on Ebay), including an active antenna. It is a stand-alone GPS module. According to the datasheet, the GPS chip uses about 36mA during operation.  The Ublox has four connections, TX, RX, VCC and GND.   The module has a voltage regulator, and can take up to 6+ volts input.   The serial port is set to  9600,N,1 as a default.  
@@ -52,7 +53,7 @@ A Ublox Neo-6m GPS module (NEO-6M-0-001)  was used (around $15USD on Ebay), incl
 I had to change the ublox firmware settings to produced the desired output using the Ublox Ucenter software (available from the Ublox website). You'll need to connect the tx/rx and gnd pins to a USB/TTL 5/3.3v FTDI or equivlent cable and connect to a computer running the Ucenter (windows based) software. I used Ubuntu/Wine to run the Ucenter software - it would crash sometimes, but I was to able to reprogram the module.   I changed the following settings and saved them to the EEPROM:  Output: NMEA, Output Version 2.3, Compatiblity Mode (checked), GPZDA messages set output to true.    
 
 The Ublox is cross-over connected to an Arduino software serial port using AltSoftSerial, which uses pins D8 and D9 (RX and TX), so connect the Ublox RX to the Arduino TX pin and vis versa.  The Ublox was connected to the power supply, which was 4 x AAA batteries (6v+).
-![Ublox](https://raw.github.com/dfannin/arduino-vx8r-gps/master/ublox-neo6m.jpg)
+![Ublox](https://raw.github.com/dfannin/arduino-vx8r-gps/master/img/ublox-neo6m.jpg)
 
 
 ## Arduino
@@ -62,7 +63,7 @@ The Nano is connected to the TX/RX pins of the GPS module, and is also connected
 
 The Nano can still be updated using the Usb interface; However, since the USB tx/rx pins are shared with D0/D1, you won't be able to connect to the Yaesu and the USB interface at the same time.  You should disconnect the Yaesu cable from the unit whenever doing a new software upgrade to the Nano.  As a benefit,  You can see the GPS output stream from the Nano when you connect to the USB port and use a term emulator, which makes it easier to debug.  I did this to avoid having two software serial ports.
 
-![Ublox](https://raw.github.com/dfannin/arduino-vx8r-gps/master/ArduinoNanoFront.jpg)
+![Ublox](https://raw.github.com/dfannin/arduino-vx8r-gps/master/img/ArduinoNanoFront.jpg)
 
 ### Arduino Software
 The software provides the serial port forwarding and NMEA message translation between HT and GPS module.  A new class was created _GpsDevice_ that does the serial port stream reading, parsing, filtering and output.  See the Extension/Modificaiton section for hints on how to modify this class if you require other types of filtering or translation.   The checksums from the GPS module are calculated and compared before passing thru messages, and new checksums are generated for modified messages.  Other have observed, and I have seen that the Yaesu HT does not valid the checksums, it doesn't to add much overhead.
@@ -75,13 +76,15 @@ The Arduino library _AltSoftSerial_ is required to be installed in your Arduino 
 
 The Yaesu VX-8R uses a proprietary 7 pin connector, which I have been unable to find.  Therefore, I purchased a rather expensive USB cable (normally used for programing the Yaesu) and cut the USB end off, and wired the 3 pins (TX,RX and GND)  into the Nano as shown. A better option would be to use the CT-M11 cable from Yaesu, which provides all the pins outs, including the 3.3V power supply.  if you get a 3.3v Nano, you should be able to power the GPS and Nano from the HT power supply directly, rather than use an external battery pack.   
 
-![Ublox](https://raw.github.com/dfannin/arduino-vx8r-gps/master/YaesuUSBCable.jpg)
+![Ublox](https://raw.github.com/dfannin/arduino-vx8r-gps/master/img/YaesuUSBCable.jpg)
 
 ## Case and Mounting 
 
-I used a small mint tin (about half the size of an arduino tin) for the GPS and Nano.  I installed the GPS antenna on the outside of the case, and drilled holes for the antenna cable, Yaesu HT cable and an opening for the Nano usb connector.   After wiring the circuit and boards together, I used hot glue to mount all the components in the case. 
+I used a small mint tin (about half the size of an arduino tin) for the GPS and Nano.  I installed the GPS antenna on the outside of the case, and drilled holes for the antenna cable, Yaesu HT cable and an opening for the Nano usb connector.   After wiring the circuit and boards together, I used hot glue to mount all the components in the case.  I used a thin wall pvc pipe to create a removable mount for the GPS and battery, which can attach/detach using the belt clip. 
 
 It's important to use a common ground for all modules and power supply, to minimize RF interference, including the gps/Nano,  case and Yaesu cable.
+
+![BlockDiagram](https://raw.github.com/dfannin/arduino-vx8r-gps/master/img/vx8r-iso.jpg)
 
 # Use  
 
